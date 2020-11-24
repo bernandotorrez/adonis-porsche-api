@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
@@ -14,6 +15,14 @@ class TblModelPorsche extends Model {
 
     static get visible() {
         return ['id_model', 'model_name']
+    }
+
+    static boot() {
+        super.boot()
+
+        this.addHook('beforeCreate', async(data) => {
+            data.model_name = await _.upperFirst(data.model_name)
+        })
     }
 }
 

@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const TblModelPorsche = use('App/Models/TblModelPorsche')
 
 class TblModelController {
@@ -47,14 +48,14 @@ class TblModelController {
 
     async create({ request, response }) {
         const { model_name } = request.post()
-        const find = await TblModelPorsche.query().where({model_name: model_name}).active().first()
+        const find = await TblModelPorsche.query().where({model_name: _.upperFirst(model_name)}).active().first()
 
         if(find) {
             return response.ok({
                 httpStatus: 200,
                 message: 'exist',
-                count: 0,
-                data: find
+                count: 1,
+                data: find.model_name
             })
         } else {
             const create = await TblModelPorsche.create(request.post())
@@ -79,7 +80,9 @@ class TblModelController {
 
     async edit({ request, params, response }) {
         const { id } = params
+        const { model_name } = request.post()
         const find = await TblModelPorsche.query().where({id_model: id}).active().first()
+        request.post().model_name = _.upperFirst(model_name)
         
         if(!find) {
             return response.ok({
@@ -89,23 +92,34 @@ class TblModelController {
                 data: []
             })
         } else {
-            const update = await TblModelPorsche.query().where({id_model: id}).active().update(request.post())
+            const duplicate = await TblModelPorsche.query().whereNot({id_model: id}).where({model_name: model_name}).first()
 
-            if(update) {
+            if(duplicate) {
                 return response.ok({
                     httpStatus: 200,
-                    message: 'success',
+                    message: 'exist',
                     count: 1,
-                    data: id
+                    data: duplicate.model_name
                 })
             } else {
-                return response.ok({
-                    httpStatus: 200,
-                    message: 'failed',
-                    count: 0,
-                    data: []
-                })
-            }
+                const update = await TblModelPorsche.query().where({id_model: id}).active().update(request.post())
+
+                if(update) {
+                    return response.ok({
+                        httpStatus: 200,
+                        message: 'success',
+                        count: 1,
+                        data: id
+                    })
+                } else {
+                    return response.ok({
+                        httpStatus: 200,
+                        message: 'failed',
+                        count: 0,
+                        data: []
+                    })
+                }
+            }d
         }
     }
 
