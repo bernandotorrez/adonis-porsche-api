@@ -119,7 +119,7 @@ class TblModelController {
                         data: []
                     })
                 }
-            }d
+            }
         }
     }
 
@@ -135,7 +135,7 @@ class TblModelController {
                 data: []
             })
         } else {
-            const destroy = await TblModelPorsche.query().where({id_model: id}).active().delete()
+            const destroy = await TblModelPorsche.query().where({id_model: id}).active().update({status: '0'})
 
             if(destroy) {
                 return response.ok({

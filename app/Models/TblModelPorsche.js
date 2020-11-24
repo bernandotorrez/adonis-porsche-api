@@ -17,6 +17,10 @@ class TblModelPorsche extends Model {
         return ['id_model', 'model_name']
     }
 
+    typeModels() {
+        return this.hasMany('App/Models/TblTypeModelPorsche', 'id_model', 'id_model')
+    }
+
     static boot() {
         super.boot()
 

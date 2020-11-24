@@ -21,7 +21,8 @@ Route.get('/', () => {
     api: {
       v1: {
         RouteList: {
-          Model: [{
+          Model: [
+            {
               url: 'api/v1/model',
               method: 'GET',
               desc: 'Get All Data Model'
@@ -46,6 +47,13 @@ Route.get('/', () => {
               method: 'DELETE',
               desc: 'Delete Model By ID'
             },
+          ],
+          TypeModel: [
+            {
+              url: 'api/v1/type_model',
+              method: 'GET',
+              desc: 'Get All Data Type Model'
+            }
           ]
         }
       },
@@ -78,5 +86,10 @@ Route.group(() => {
   Route.post('/model/create', 'TblModelController.create').validator('CreateModel')
   Route.patch('/model/edit/:id', 'TblModelController.edit').validator('CreateModel')
   Route.delete('/model/delete/:id', 'TblModelController.delete')
+
+  /**
+   * Type Model Porsche Route
+   */
+  Route.get('/type_model', 'TblTypeModelPorscheController.index')
 
 }).prefix('api/v1')
